@@ -1,10 +1,13 @@
 <template>
 	<view class="v-tab" ref="vTab">
-		<scroll-view scroll-with-animation scroll-x :scroll-left="isScroll?scrollLeft:0" :style="{backgroundColor:bgColor,borderBottom:[isShowBorder?'0.5px solid #ddd':'none']}">
+		<scroll-view scroll-with-animation scroll-x :scroll-left="scrollLeft"
+			:style="{backgroundColor:bgColor,borderBottom:[isShowBorder?'0.5px solid #ddd':'none']}">
 			<view class="flex-row container">
 
-				<view class="flex-1 v-tab-item" v-for="(item,index) in tabList" :key="index" :id="index" @tap="tabSelect(index)">
-					<text class="text-nowrap" :style="{color:(index===current?fontSelectedColor:fontColor),fontSize:fontSize+'rpx',lineHeight: height+'rpx'}">{{item.name}}</text>
+				<view class="flex-1 v-tab-item" v-for="(item,index) in tabList" :key="index" :id="index"
+					@tap="tabSelect(index)">
+					<text class="text-nowrap"
+						:style="{color:(index===current?fontSelectedColor:fontColor),fontSize:fontSize+'rpx',lineHeight: height+'rpx'}">{{item.name}}</text>
 					<view :style="{height:barHeight+'rpx',backgroundColor:[current===index?barBgColor:'']}"></view>
 				</view>
 
@@ -12,8 +15,8 @@
 		</scroll-view>
 	</view>
 </template>
+
 <script>
-	//此组件为自写,有问题请更换，推荐: https://ext.dcloud.net.cn/plugin?id=1971 
 	export default {
 		data() {
 			return {
@@ -34,11 +37,11 @@
 				}
 			},
 			height: {
-				type: [Number, String], // 高度
+				type: Number, // 高度
 				default: 88
 			},
 			barHeight: {
-				type: [Number, String], // 底栏高度
+				type: Number, // 底栏高度
 				default: 6
 			},
 			barBgColor: {
@@ -54,7 +57,7 @@
 				default: "#0081ff"
 			},
 			fontSize: {
-				type: [Number, String], // 字号
+				type: Number, // 字号
 				default: 30
 			},
 			bgColor: {
@@ -64,10 +67,6 @@
 			isShowBorder: {
 				type: Boolean, //是否显示底部边框
 				default: true
-			},
-			isScroll: {
-				type: Boolean, //是否滚动
-				default: false
 			}
 		},
 		methods: {
@@ -78,8 +77,7 @@
 		computed: {
 			scrollLeft() {
 				let convertWidth = this.convertWidth
-				if (convertWidth > 0)
-					return (this.current - 1) * convertWidth
+				if (convertWidth > 0) return (this.current - 1) * convertWidth
 				return (this.current - 1) * 65;
 			}
 		},
@@ -87,9 +85,7 @@
 			this.$nextTick(function() {
 				const query = uni.createSelectorQuery();
 				query.select('.v-tab-item').boundingClientRect(data => {
-					if (data != null) { //避免小程序报错
-						this.convertWidth = data.width //获取每个tabItem平均宽度
-					}
+					if (data != null) this.convertWidth = data.width //获取每个tabItem平均宽度
 				}).exec();
 			})
 		}

@@ -1,8 +1,9 @@
 <template>
 	<view class="flex-column flex-1 index-container">
-		<v-tab :isScroll="true" :current="tabCurrent" :tabList="tabList" @change="tabChange" />
+		<v-tab :current="current" :tabList="tabList" @change="change('tab',$event)" />
 
-		<swiper class="flex-1 swiper" :current="tabCurrent" :circular="false" @change="swiperChange" :duration="200">
+		<swiper class="flex-1 swiper" :current="current" :circular="false" @change="change('swiper',$event)"
+			:duration="300">
 			<swiper-item v-for="(item,index) in tabList" :key="index" class="flex-column swiper-item">
 				<view class="btn-c" v-if="index==0">
 					<button @click="goToPage('../search/index')">搜索页</button>
@@ -33,23 +34,21 @@
 		},
 		data() {
 			return {
-				tabCurrent: 0,
+				current: 0,
 				tabList: [],
 			}
 		},
 		created() {
 			for (var i = 0; i < 7; i++) {
 				this.tabList.push({
-					name: `tabItem-${i}`
+					name: `tabItem${i}`
 				})
 			}
 		},
 		methods: {
-			tabChange(index) {
-				this.tabCurrent = index
-			},
-			swiperChange(e) {
-				this.tabCurrent = e.detail['current']
+			change(type, e) {
+				if (type == 'swiper' && !e.detail['source']) return
+				this.current = type == 'tab' ? e : e.detail['current']
 			},
 			goToPage(url) {
 				this.$toolkit.toPage.navigateTo(url)
