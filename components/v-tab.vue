@@ -1,5 +1,5 @@
 <template>
-	<view class="v-tab" ref="vTab">
+	<view class="v-tab">
 		<scroll-view scroll-with-animation scroll-x :scroll-left="scrollLeft"
 			:style="{backgroundColor:bgColor,borderBottom:[isShowBorder?'0.5px solid #ddd':'none']}">
 			<view class="flex-row container">
@@ -69,25 +69,32 @@
 				default: true
 			}
 		},
-		methods: {
-			tabSelect(index) {
-				this.$emit('change', index);
-			}
-		},
 		computed: {
 			scrollLeft() {
 				let convertWidth = this.convertWidth
 				if (convertWidth > 0) return (this.current - 1) * convertWidth
-				return (this.current - 1) * 65;
+				return 0;
 			}
 		},
-		mounted() {
-			this.$nextTick(function() {
-				const query = uni.createSelectorQuery();
-				query.select('.v-tab-item').boundingClientRect(data => {
-					if (data != null) this.convertWidth = data.width //获取每个tabItem平均宽度
-				}).exec();
-			})
+		async mounted() {
+			const windowWidth = uni.getSystemInfoSync()['windowWidth']
+			const tabWidth = await this.getElWidth('.v-tab')
+			if (tabWidth < windowWidth) return
+			this.convertWidth = await this.getElWidth('.v-tab-item')
+		},
+		methods: {
+			tabSelect(index) {
+				this.$emit('change', index);
+			},
+			getElWidth(el) {
+				return new Promise((resolve, reject) => {
+					const query = uni.createSelectorQuery().in(this);
+					query.select(el).boundingClientRect(data => {
+						if (data && data['width']) resolve(data['width'])
+						reject(data)
+					}).exec();
+				})
+			}
 		}
 	};
 </script>
