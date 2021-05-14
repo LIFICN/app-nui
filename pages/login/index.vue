@@ -1,8 +1,8 @@
 <template>
-	<view class="flex-column login-wrapper" :style="{height:realHeight+'px'}">
+	<view class="flex-column login-wrapper">
 
 		<view class="flex-column head">
-			<image class="head-img" src="../../static/logo.png">
+			<image class="head-img" src="@/static/logo.png">
 		</view>
 
 		<view class="flex-row list-item">
@@ -34,7 +34,6 @@
 		data() {
 			return {
 				content: '',
-				realHeight: this.$toolkit.resizeHeight.getHeight(),
 				phone: '',
 				pwd: '',
 				code: '',

@@ -5,7 +5,7 @@ export default {
 			fail(err) {
 				console.log(err)
 			}
-		});
+		})
 	},
 	redirectTo(url) {
 		uni.redirectTo({
@@ -13,7 +13,7 @@ export default {
 			fail(err) {
 				console.log(err)
 			}
-		});
+		})
 	},
 	switchTab(url) {
 		uni.switchTab({
@@ -21,6 +21,14 @@ export default {
 			fail(err) {
 				console.log(err)
 			}
-		});
+		})
+	},
+	reLaunch(url) {
+		uni.reLaunch({
+			url: url,
+			fail(err) {
+				console.log(err)
+			}
+		})
 	}
 }

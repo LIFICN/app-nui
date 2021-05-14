@@ -1,17 +1,17 @@
 <template>
 	<picker-view :value="valArr" @change="popPickerChange" class="date-pck-view">
 		<picker-view-column>
-			<view class="pck-item" v-for="(item,index) in years" :key="index" :class="{'s-color':index==yIndex}">
+			<view class="pck-item" v-for="(item,index) in years" :key="index" :class="{'s-color':index == yIndex}">
 				{{ (index>0?`${item}年`:'年')}}
 			</view>
 		</picker-view-column>
 		<picker-view-column>
-			<view class="pck-item" v-for="(item,index) in months" :key="index" :class="{'s-color':index==mIndex}">
+			<view class="pck-item" v-for="(item,index) in months" :key="index" :class="{'s-color':index == mIndex}">
 				{{ (index>0?`${item}月`:'月')}}
 			</view>
 		</picker-view-column>
 		<picker-view-column>
-			<view class="pck-item" v-for="(item,index) in days" :key="index" :class="{'s-color': index==dIndex}">
+			<view class="pck-item" v-for="(item,index) in days" :key="index" :class="{'s-color': index == dIndex}">
 				{{ (index>0?`${item}日`:'日')}}
 			</view>
 		</picker-view-column>

@@ -11,7 +11,7 @@
 					<!-- #ifdef MP-WEIXIN -->
 					<button open-type="getUserInfo" @getuserinfo="getuserinfo">获取微信小程序用户信息</button>
 					<!-- #endif -->
-					<button @click="addCount()">全局状态管理 {{count}}</button>
+					<button @click="addCount">全局状态管理 {{count}}</button>
 				</view>
 
 				<view v-else style="text-align: center;">{{index}}</view>
@@ -21,12 +21,7 @@
 </template>
 
 <script>
-	import vTab from '@/components/v-tab'
-
 	export default {
-		components: {
-			vTab,
-		},
 		computed: {
 			count() {
 				return this.$store.state.count
@@ -51,10 +46,10 @@
 				this.current = type == 'tab' ? e : e.detail['current']
 			},
 			goToPage(url) {
-				this.$toolkit.toPage.navigateTo(url)
+				this.$utils.toPage.navigateTo(url)
 			},
 			getuserinfo(res) {
-				this.$toolkit.tips.showModal('test', JSON.stringify(res))
+				this.$utils.tips.showModal('test', JSON.stringify(res))
 			},
 			onReachBottom() {
 				console.log('bottom')

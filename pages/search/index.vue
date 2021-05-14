@@ -1,5 +1,5 @@
 <template>
-	<view class="flex-column" :style="{height:realHeight+'px'}">
+	<view class="flex-column">
 
 		<!-- #ifdef MP-WEIXIN -->
 		<top-bar>
@@ -14,16 +14,10 @@
 </template>
 
 <script>
-	import topBar from '@/components/top-bar.vue'
-
 	export default {
-		components: {
-			topBar
-		},
 		data() {
 			return {
-				content: '',
-				realHeight: this.$toolkit.resizeHeight.getHeight()
+				content: ''
 			}
 		},
 		onNavigationBarButtonTap(e) {

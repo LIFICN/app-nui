@@ -16,11 +16,11 @@ export default {
 			})
 		})
 	},
-	showToast(title, duration) {
+	showToast(title, position) {
 		return new Promise((resolve, reject) => {
 			uni.showToast({
 				title: title,
-				duration: duration || 2000,
+				position: position || "bottom",
 				success() {
 					resolve()
 				},

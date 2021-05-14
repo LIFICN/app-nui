@@ -68,5 +68,8 @@
 			"pagePath": "pages/douyin/index",
 			"text": "仿抖音"
 		}]
+	},
+	"easycom": {
+		"autoscan": true
 	}
 }

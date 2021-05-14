@@ -13,8 +13,8 @@ const store = new Vuex.Store({
 		}
 	},
 	actions: {
-		addCount({ commit }) {
-           commit('add')
+		addCount(comtext) {
+			comtext.commit('add')
 		}
 	}
 })
