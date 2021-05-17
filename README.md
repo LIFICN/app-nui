@@ -1,2 +1,2 @@
 # app-uni
-uni-app 脚手架
+uni-app project
