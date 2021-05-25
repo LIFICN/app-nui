@@ -1,7 +1,7 @@
 <template>
 	<scroll-view scroll-with-animation scroll-x :show-scrollbar="false" class="v-tab"
 		:style="{'background-color':bgColor,'width':width}" :id="`tab${refKey}`" :scroll-into-view="scrollInto">
-		<view class="tab-content">
+		<view class="v-tab-content">
 			<view class="v-tab-item" v-for="(item,index) in tabList" :key="`${refKey}tabitem${index}`"
 				@click="tabSelected(index)" :id="`${refKey}tabitem${index}`" :ref="`${refKey}tabitem${index}`"
 				:style="itemStyle">
@@ -165,7 +165,7 @@
 	.v-tab {
 		flex-direction: row;
 
-		.tab-content {
+		&-content {
 			/* #ifndef APP-NVUE */
 			display: flex;
 			/* #endif */
