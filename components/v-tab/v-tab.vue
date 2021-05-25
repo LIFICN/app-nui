@@ -30,37 +30,37 @@
 				type: Number, // 当前活动tab的下标
 				default: 0
 			},
-			showBar: {
+			showBar: { //是否显示滑块
 				type: Boolean,
 				default: true
 			},
-			bgColor: {
+			bgColor: { //背景色
 				type: String,
 				default: '#FFFFFF'
 			},
-			width: {
+			width: { //宽度
 				type: String,
 				default: '750rpx'
 			},
-			activeStyle: {
+			activeStyle: { //选中样式
 				type: Object,
 				default () {
 					return {}
 				}
 			},
-			defaultStyle: {
+			defaultStyle: { //未选中样式
 				type: Object,
 				default () {
 					return {}
 				}
 			},
-			barStyle: {
+			barStyle: { //底部滑块样式
 				type: Object,
 				default () {
 					return {}
 				}
 			},
-			itemStyle: {
+			itemStyle: { //item样式
 				type: Object,
 				default () {
 					return {}
@@ -73,16 +73,20 @@
 		},
 		data() {
 			return {
-				tabbarWidth: 0,
+				tabbarWidth: 0, //可见区域宽度
 				scrollInto: '',
-				tabListSize: []
+				tabListWidth: []
 			}
 		},
 		watch: {
 			current: {
 				handler(newVal, oldVal) {
 					// #ifndef APP-NVUE
-					const index = newVal > oldVal ? oldVal : newVal - 1 //让滑块保持在中间
+					const val = newVal - oldVal
+					let index = newVal > oldVal ? oldVal : newVal - 1 //让滑块保持在中间(按顺序滑动)
+
+					if (val != 1 || val != -1) index = newVal //修复点击错乱bug
+
 					this.scrollInto = `${this.refKey}tabitem${index}`
 					// #endif
 
@@ -90,16 +94,16 @@
 					const el = this.$refs[`${this.refKey}tabitem${newVal}`][0]
 					let offset = 0
 
-					const space = this.tabListSize.filter((_, index) => {
+					const space = this.tabListWidth.filter((_, index) => {
 						if (newVal > oldVal) return index < newVal
 						return index >= newVal
 					}).reduce((prev, next) => prev + next)
 
 					//修复ios滚动错位的问题
 					if (newVal > 0) {
-						offset = this.tabBarWidthHalf - this.tabListSize[newVal] / 2
-						if (space < this.tabBarWidthHalf || this.sumWidth - space < this.tabBarWidthHalf)
-							offset = this.tabListSize[0]
+						offset = this.tabBarWidthHalf - this.tabListWidth[newVal] / 2
+						if (space < this.tabBarWidthHalf || this.sumWidth - space < this.tabBarWidthHalf) //左右间距判断
+							offset = this.tabListWidth[0]
 					}
 
 					dom.scrollToElement(el, {
@@ -121,7 +125,7 @@
 						})
 
 						Promise.all(promiseArr).then(res => {
-							this.tabListSize = res.map(el => el['width'])
+							this.tabListWidth = res.map(el => el['width'])
 						}).catch(err => console.log(err))
 
 						this.getElSize(`#tab${this.refKey}`).then(res => {
@@ -134,7 +138,7 @@
 		},
 		computed: {
 			sumWidth() {
-				return this.tabListSize.reduce((prev, next) => prev + next)
+				return this.tabListWidth.reduce((prev, next) => prev + next) //实际宽度
 			},
 			tabBarWidthHalf() {
 				return this.tabbarWidth / 2
@@ -154,7 +158,7 @@
 				})
 			}
 		}
-	};
+	}
 </script>
 
 <style lang="scss" scoped>
