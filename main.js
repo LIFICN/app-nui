@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from './App'
 import utils from '@/utils/index.js'
-import uniIcons from '@/components/uni-icons/uni-icons.vue'
 import store from './store'
 
 Vue.config.productionTip = false

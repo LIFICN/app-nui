@@ -1,0 +1,11 @@
+{
+  "name": "app-uni",
+  "version": "0.0.1",
+  "description": "uni-app project",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@dcloudio/uni-ui": "^1.3.1"
+  }
+}
