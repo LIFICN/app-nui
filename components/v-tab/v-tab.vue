@@ -1,6 +1,6 @@
 <template>
-	<scroll-view scroll-with-animation scroll-x :show-scrollbar="false" class="v-tab"
-		:style="{'background-color':bgColor,'width':width}" :id="`tab${refKey}`" :scroll-into-view="scrollInto">
+	<scroll-view scroll-with-animation scroll-x class="v-tab" :style="{'background-color':bgColor,'width':width}"
+		:id="`tab${refKey}`" :scroll-into-view="scrollInto">
 		<view class="v-tab-content">
 			<view class="v-tab-item" v-for="(item,index) in tabList" :key="`${refKey}tabitem${index}`"
 				@click="tabSelected(index)" :id="`${refKey}tabitem${index}`" :ref="`${refKey}tabitem${index}`"
@@ -83,9 +83,9 @@
 				handler(newVal, oldVal) {
 					// #ifndef APP-NVUE
 					const val = newVal - oldVal
-					let index = newVal > oldVal ? oldVal : newVal - 1 //让滑块保持在中间(按顺序滑动)
-
-					if (val != 1 || val != -1) index = newVal //修复点击错乱bug
+					const flag = newVal > oldVal
+					let index = flag ? oldVal : newVal - 1 //让滑块保持在中间(顺序滑动)
+					if ((flag && val != 1) || (!flag && val != -1)) index = newVal //修复点击错乱bug(乱序点击)
 
 					this.scrollInto = `${this.refKey}tabitem${index}`
 					// #endif
@@ -187,5 +187,12 @@
 			background-color: #007AFF;
 			margin-top: 8rpx;
 		}
+
+		/* #ifndef APP-NVUE */
+		::-webkit-scrollbar {
+			display: none; //去除滚动条
+		}
+
+		/* #endif */
 	}
 </style>

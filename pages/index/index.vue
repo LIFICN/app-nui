@@ -24,7 +24,7 @@
 	export default {
 		computed: {
 			count() {
-				return this.$store.state.count
+				return this.$store.getters.count
 			}
 		},
 		data() {

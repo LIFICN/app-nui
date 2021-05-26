@@ -7,6 +7,9 @@ const store = new Vuex.Store({
 	state: {
 		count: 1
 	},
+	getters: {
+		count: state => state.count
+	},
 	mutations: {
 		add(state) {
 			state.count += 1
