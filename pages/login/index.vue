@@ -8,19 +8,19 @@
 		<view class="flex-row list-item">
 			<input class="flex-1 list-input" type="text" :value="phone" @input="input($event,'phone')"
 				placeholder="请输入手机号" />
-			<uni-icons v-show="phone" @click="clearInput('phone')" type="close" size="16"></uni-icons>
+			<uni-icons v-show="phone" @tap="clearInput('phone')" type="closeempty" size="16"></uni-icons>
 		</view>
 
 		<view class="flex-row list-item">
 			<input class="flex-1 list-input" value="" :value="pwd" @input="input($event,'pwd')" placeholder="请输入密码" />
-			<uni-icons v-show="pwd" @click="clearInput('pwd')" type="close" size="16"></uni-icons>
+			<uni-icons v-show="pwd" @tap="clearInput('pwd')" type="closeempty" size="16"></uni-icons>
 		</view>
 
 		<view class="flex-row list-item">
 			<input class="flex-1 list-input" :value="code" @input="input($event,'code')" placeholder="请输入短信验证码" />
-			<uni-icons v-show="code" @click="clearInput('code')" type="close" size="16" style="margin-right: 3px;">
+			<uni-icons v-show="code" @tap="clearInput('code')" type="closeempty" size="16" style="margin-right: 3px;">
 			</uni-icons>
-			<text class="flex-row code" @click="sendCode" :style="{color: [sendCodeInterval>0?'gray':'#007aff']}">
+			<text class="flex-row code" @tap="sendCode" :style="{color: [sendCodeInterval>0?'gray':'#007aff']}">
 				{{sendCodeInterval>0 ?`${sendCodeInterval}s`:'获取验证码'}}
 			</text>
 		</view>
@@ -47,23 +47,21 @@
 				else if (type == 'code') this.code = ''
 			},
 			input(e, type) {
-				const v = e.target.value
-				if (type === 'phone') this.phone = v
-				else if (type === 'pwd') this.pwd = v
-				else if (type == 'code') this.code = v
+				const { value } = e.target
+				if (type === 'phone') this.phone = value
+				else if (type === 'pwd') this.pwd = value
+				else if (type == 'code') this.code = value
 			},
 			sendCode() {
-				var that = this
-				if (that.sendCodeInterval === 0) {
-					var intervalId = setInterval(() => {
-						that.sendCodeInterval++
-						if (that.sendCodeInterval >= 60) {
-							that.sendCodeInterval = 0
-							clearInterval(intervalId)
-							console.log('定时器已清除')
-						}
-					}, 1000);
-				}
+				const that = this
+				if (that.sendCodeInterval !== 0) return
+				that.sendCodeInterval++
+				let intervalId = setInterval(() => {
+					that.sendCodeInterval++
+					if (that.sendCodeInterval < 60) return
+					that.sendCodeInterval = 0
+					clearInterval(intervalId)
+				}, 1000)
 			},
 		}
 	}
