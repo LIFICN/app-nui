@@ -9,6 +9,8 @@
 </template>
 
 <script>
+	import { debounce } from '@/utils/modules/func.js'
+
 	export default {
 		data() {
 			return {
@@ -52,10 +54,16 @@
 				this.list.push(i)
 			}
 		},
-		onPageScroll(e) {
-			if (this.endIndex > this.list.length - 1) return
+		onPageScroll: debounce(function(e) {
+			if (e.scrollTop < this.scrollTop) { //向上滑动
+				this.scrollTop = e.scrollTop
+				return
+			}
+
+			//解决app端onPageScroll无限触发，导致闪烁bug，未知原因
+			if (this.nsHeight == 0) return
 			this.scrollTop = e.scrollTop
-		}
+		}, 13)
 	}
 </script>
 
