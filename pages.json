@@ -39,9 +39,9 @@
 			}
 		},
 		{
-			"path": "pages/douyin/index",
+			"path": "pages/virtual-list/index",
 			"style": {
-				"navigationBarTitleText": "仿抖音"
+				"navigationBarTitleText": "长列表虚拟滚动"
 			}
 		}
 	],
@@ -65,8 +65,8 @@
 			"pagePath": "pages/index/index",
 			"text": "组件"
 		}, {
-			"pagePath": "pages/douyin/index",
-			"text": "仿抖音"
+			"pagePath": "pages/virtual-list/index",
+			"text": "虚拟列表"
 		}]
 	},
 	"easycom": {
