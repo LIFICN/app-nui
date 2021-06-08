@@ -1,10 +1,11 @@
 <template>
-	<view class="virtual-list-wrapper">
-		<view class="previous-space" :style="{'height':psHeight+'px'}"></view>
-		<view class="item" v-for="num in visibleData" :key="num">
-			{{num}}
+	<view class="virtual-list-wrapper" :style="{'height':listHeight+'px'}">
+		<view class="previous-space" :style="{'height': previousSpace+'px'}"></view>
+		<view class="list-content" :style="{'transform':`translate3d(0, ${previousSpace}px, 0)`}">
+			<view class="item" v-for="num in visibleData" :key="num">
+				{{num}}
+			</view>
 		</view>
-		<view class="next-space" :style="{'height': nsHeight+'px'}"></view>
 	</view>
 </template>
 
@@ -15,7 +16,8 @@
 		data() {
 			return {
 				list: [],
-				scrollTop: 0
+				scrollTop: 0,
+				isTouchUp: false
 			}
 		},
 		computed: {
@@ -29,24 +31,34 @@
 			},
 			//子元素高度
 			itemHeight() {
-				return uni.upx2px(70) //转成px
+				return uni.upx2px(100) //转成px
 			},
-			// 数据的结束索引
+			//数据的结束索引
 			endIndex() {
 				return this.startIndex + this.visibleCount
 			},
 			//列表显示数据
 			visibleData() {
-				return this.list.slice(this.startIndex, this.endIndex)
+				if (this.isTouchUp) return this.list.slice(this.touchUpIndex, this.endIndex)
+				return this.list.slice(this.startIndex, this.endIndex + this.bufferSize)
 			},
-			//上占位
-			psHeight() {
+			//父容器高度
+			listHeight() {
+				return this.itemHeight * this.list.length
+			},
+			//satrtindex到顶部间距
+			previousSpace() {
+				if (this.isTouchUp) return (this.touchUpIndex * this.itemHeight)
 				return this.startIndex * this.itemHeight
 			},
-			//下占位
-			nsHeight() {
-				const param = (this.list.length - 1 - this.endIndex) * this.itemHeight
-				return param > 0 ? param : 0
+			//缓冲区数量
+			bufferSize() {
+				return 20
+			},
+			//向上滑动起始位置控制
+			touchUpIndex() {
+				const start = this.startIndex - this.bufferSize
+				return start > 0 ? start : 0
 			}
 		},
 		created() {
@@ -55,22 +67,33 @@
 			}
 		},
 		onPageScroll: debounce(function(e) {
-			if (e.scrollTop < this.scrollTop) { //向上滑动
-				this.scrollTop = e.scrollTop
-				return
-			}
-
-			//解决app端onPageScroll无限触发，导致闪烁bug，未知原因
-			if (this.nsHeight == 0) return
+			if (e.scrollTop < this.scrollTop) this.isTouchUp = true
+			else this.isTouchUp = false
 			this.scrollTop = e.scrollTop
-		}, 13)
+		}, 12)
 	}
 </script>
 
 <style lang="scss" scoped>
 	.virtual-list-wrapper {
-		overflow-x: hidden;
-		padding: 0rpx 20rpx 20rpx 20rpx;
+		position: relative;
+		overflow: hidden;
+
+		.previous-space {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: -1;
+		}
+
+		.list-content {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
 
 		.item {
 			font-size: 28rpx;
