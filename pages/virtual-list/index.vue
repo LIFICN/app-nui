@@ -1,7 +1,7 @@
 <template>
 	<view class="virtual-list-wrapper" :style="{'height':listHeight+'px'}">
 		<view class="previous-space" :style="{'height': previousSpace+'px'}"></view>
-		<view class="list-content" :style="{'transform':`translate3d(0, ${previousSpace}px, 0)`}">
+		<view class="list-content" id="list-content" :style="{'transform':`translate3d(0, ${previousSpace}px, 0)`}">
 			<view class="item" v-for="num in visibleData" :key="num">
 				{{num}}
 			</view>
@@ -17,7 +17,9 @@
 			return {
 				list: [],
 				scrollTop: 0,
-				isTouchUp: false
+				isTouchUp: false,
+				listHeight: 0,
+				isScrollBottom: false
 			}
 		},
 		computed: {
@@ -42,10 +44,6 @@
 				if (this.isTouchUp) return this.list.slice(this.touchUpIndex, this.endIndex)
 				return this.list.slice(this.startIndex, this.endIndex + this.bufferSize)
 			},
-			//父容器高度
-			listHeight() {
-				return this.itemHeight * this.list.length
-			},
 			//satrtindex到顶部间距
 			previousSpace() {
 				if (this.isTouchUp) return (this.touchUpIndex * this.itemHeight)
@@ -59,18 +57,55 @@
 			touchUpIndex() {
 				const start = this.startIndex - this.bufferSize
 				return start > 0 ? start : 0
+			},
+			//预估列表高度
+			estimateHeight() {
+				return 30 * this.list.length
+			}
+		},
+		watch: {
+			list: {
+				deep: true,
+				immediate: true,
+				handler() {
+					this.isScrollBottom = false
+				}
 			}
 		},
 		created() {
 			for (let i = 1; i <= 1000; i++) {
 				this.list.push(i)
 			}
+
+			this.listHeight = this.estimateHeight
 		},
 		onPageScroll: debounce(function(e) {
-			if (e.scrollTop < this.scrollTop) this.isTouchUp = true
+			if (e.scrollTop < this.scrollTop) this.isTouchUp = true //判断滑动方向
 			else this.isTouchUp = false
+
+			const lastItem = this.list[this.list.length - 1]
+			if (this.visibleData.indexOf(lastItem) > -1) this.isScrollBottom = true //判断是否滚动到底
+
 			this.scrollTop = e.scrollTop
-		}, 12)
+		}, 12),
+		async updated() {
+			if (this.isScrollBottom) return
+			const { height } = await this.getELSize(`list-content`)
+			const sumHeight = this.scrollTop + height
+			if (this.estimateHeight >= sumHeight) return //滚动到底不再更新
+			this.listHeight = this.scrollTop + height
+		},
+		methods: {
+			getELSize(id) {
+				return new Promise((resolve, reject) => {
+					const query = uni.createSelectorQuery().in(this)
+					query.select(`#${id}`).boundingClientRect(data => {
+						if (data && typeof data == 'object') resolve(data)
+						else reject(data)
+					}).exec()
+				})
+			}
+		}
 	}
 </script>
 
