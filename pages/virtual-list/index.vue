@@ -10,7 +10,7 @@
 </template>
 
 <script>
-	import { debounce } from '@/utils/modules/func.js'
+	import { throttle } from '@/utils/modules/func.js'
 
 	export default {
 		data() {
@@ -61,6 +61,10 @@
 			//预估列表高度
 			estimateHeight() {
 				return 30 * this.list.length
+			},
+			//列表最后一个item
+			lastItem() {
+				return this.list[this.list.length - 1]
 			}
 		},
 		watch: {
@@ -79,22 +83,22 @@
 
 			this.listHeight = this.estimateHeight
 		},
-		onPageScroll: debounce(function(e) {
+		async updated() {
+			if (this.isScrollBottom) return //滚动到底不再更新
+			const { height } = await this.getELSize(`list-content`)
+			const sumHeight = this.scrollTop + height
+			if (this.estimateHeight >= sumHeight) return
+			this.listHeight = this.scrollTop + height
+		},
+		onPageScroll: throttle(function(e) {
 			if (e.scrollTop < this.scrollTop) this.isTouchUp = true //判断滑动方向
 			else this.isTouchUp = false
 
-			const lastItem = this.list[this.list.length - 1]
-			if (this.visibleData.indexOf(lastItem) > -1) this.isScrollBottom = true //判断是否滚动到底
+			if (this.visibleData.lastIndexOf(this.lastItem) > -1)
+				this.isScrollBottom = true //判断是否滚动到底
 
 			this.scrollTop = e.scrollTop
-		}, 12),
-		async updated() {
-			if (this.isScrollBottom) return
-			const { height } = await this.getELSize(`list-content`)
-			const sumHeight = this.scrollTop + height
-			if (this.estimateHeight >= sumHeight) return //滚动到底不再更新
-			this.listHeight = this.scrollTop + height
-		},
+		}, 100),
 		methods: {
 			getELSize(id) {
 				return new Promise((resolve, reject) => {

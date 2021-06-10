@@ -2,7 +2,10 @@ export function throttle(func, wait) { //节流函数
 	let timer = null
 	return function() {
 		if (timer) return
-		timer = setTimeout(() => func.apply(this, arguments), wait)
+		timer = setTimeout(() => {
+			func.apply(this, arguments)
+			timer = null
+		}, wait)
 	}
 }
 
