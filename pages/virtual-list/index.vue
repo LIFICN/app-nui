@@ -1,7 +1,7 @@
 <template>
 	<view class="virtual-list-wrapper" :style="{'height':listHeight+'px'}">
 		<view class="previous-space" :style="{'height': previousSpace+'px'}"></view>
-		<view class="list-content" id="list-content" :style="{'transform':`translate3d(0, ${previousSpace}px, 0)`}">
+		<view class="list-content" :style="{'transform':`translate3d(0, ${previousSpace}px, 0)`}">
 			<view class="item" v-for="num in visibleData" :key="num">
 				{{num}}
 			</view>
@@ -19,25 +19,27 @@
 				scrollTop: 0,
 				isTouchUp: false,
 				listHeight: 0,
-				isScrollBottom: false
+				sizeArr: []
 			}
 		},
 		computed: {
 			//可显示的列表项数
 			visibleCount() {
-				return Math.ceil(uni.getSystemInfoSync().screenHeight / this.itemHeight)
+				return Math.ceil(uni.getSystemInfoSync().screenHeight / this.minHeight)
 			},
 			//数据的起始索引
 			startIndex() {
-				return Math.floor(this.scrollTop / this.itemHeight)
+				if (this.scrollTop == 0) return 0
+				const index = this.sizeArr.findIndex(el => el.top >= this.scrollTop)
+				return Math.max(index - 1, 0)
 			},
-			//子元素高度
-			itemHeight() {
-				return uni.upx2px(100) //转成px
+			//最低子元素高度
+			minHeight() {
+				return uni.upx2px(80) //转成px
 			},
 			//数据的结束索引
 			endIndex() {
-				return this.startIndex + this.visibleCount
+				return Math.min(this.startIndex + this.visibleCount, this.list.length - 1)
 			},
 			//列表显示数据
 			visibleData() {
@@ -46,33 +48,37 @@
 			},
 			//satrtindex到顶部间距
 			previousSpace() {
-				if (this.isTouchUp) return (this.touchUpIndex * this.itemHeight)
-				return this.startIndex * this.itemHeight
+				try { //减一是为了缓冲
+					if (this.isTouchUp) return this.sizeArr[this.touchUpIndex]['top']
+					return this.sizeArr[this.startIndex]['top']
+				} catch {
+					return 0
+				}
 			},
 			//缓冲区数量
 			bufferSize() {
-				return 20
+				return 10
 			},
 			//向上滑动起始位置控制
 			touchUpIndex() {
-				const start = this.startIndex - this.bufferSize
-				return start > 0 ? start : 0
+				return Math.max(this.startIndex - this.bufferSize, 0)
 			},
 			//预估列表高度
 			estimateHeight() {
-				return 30 * this.list.length
+				return this.minHeight * this.list.length
 			},
-			//列表最后一个item
-			lastItem() {
-				return this.list[this.list.length - 1]
+			//item上下间距
+			space() {
+				return uni.upx2px(20)
 			}
 		},
 		watch: {
 			list: {
 				deep: true,
 				immediate: true,
-				handler() {
+				handler(newVal, _) {
 					this.isScrollBottom = false
+					this.sizeArr = new Array(newVal.length)
 				}
 			}
 		},
@@ -83,31 +89,35 @@
 
 			this.listHeight = this.estimateHeight
 		},
-		async updated() {
-			if (this.isScrollBottom) return //滚动到底不再更新
-			const { height } = await this.getELSize(`list-content`)
-			const sumHeight = this.scrollTop + height
-			if (this.estimateHeight >= sumHeight) return
-			this.listHeight = this.scrollTop + height
+		updated() {
+			if (this.sizeArr[this.sizeArr.length - 1]) return
+			uni.createSelectorQuery().in(this).selectAll('.item')
+				.boundingClientRect()
+				.exec(res => {
+					let j = 0;
+					for (let i = this.startIndex; i <= this.endIndex; i++) {
+						this.sizeArr[i] = { height: res[0][j].height + this.space }
+						this.sizeArr[i]['top'] = this.sum(this.sizeArr.slice(0, i).map(el => el.height || 0))
+						j++
+					}
+
+					const sumHeight = this.sum(this.sizeArr.map(el => el.height || 0))
+					if (this.estimateHeight >= sumHeight) return
+					this.listHeight = sumHeight
+				})
 		},
 		onPageScroll: throttle(function(e) {
 			if (e.scrollTop < this.scrollTop) this.isTouchUp = true //判断滑动方向
 			else this.isTouchUp = false
-
-			if (this.visibleData.lastIndexOf(this.lastItem) > -1)
-				this.isScrollBottom = true //判断是否滚动到底
-
 			this.scrollTop = e.scrollTop
-		}, 100),
+		}, 50),
 		methods: {
-			getELSize(id) {
-				return new Promise((resolve, reject) => {
-					const query = uni.createSelectorQuery().in(this)
-					query.select(`#${id}`).boundingClientRect(data => {
-						if (data && typeof data == 'object') resolve(data)
-						else reject(data)
-					}).exec()
-				})
+			sum(arr) {
+				try {
+					return arr.reduce((prev, curr) => prev + curr)
+				} catch {
+					return 0
+				}
 			}
 		}
 	}
