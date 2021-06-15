@@ -30,8 +30,8 @@
 			//数据的起始索引
 			startIndex() {
 				if (this.scrollTop == 0) return 0
-				const index = this.sizeArr.findIndex(el => el.top >= this.scrollTop)
-				return Math.max(index - 1, 0)
+				const index = this.sizeArr.findIndex(el => (el ? el.top : 0) >= this.scrollTop)
+				return Math.max(index - 1, 0) //减一是为了缓冲
 			},
 			//最低子元素高度
 			minHeight() {
@@ -48,7 +48,7 @@
 			},
 			//satrtindex到顶部间距
 			previousSpace() {
-				try { //减一是为了缓冲
+				try {
 					if (this.isTouchUp) return this.sizeArr[this.touchUpIndex]['top']
 					return this.sizeArr[this.startIndex]['top']
 				} catch {
@@ -57,7 +57,7 @@
 			},
 			//缓冲区数量
 			bufferSize() {
-				return 10
+				return 20
 			},
 			//向上滑动起始位置控制
 			touchUpIndex() {
@@ -92,17 +92,16 @@
 		updated() {
 			if (this.sizeArr[this.sizeArr.length - 1]) return
 			uni.createSelectorQuery().in(this).selectAll('.item')
-				.boundingClientRect()
-				.exec(res => {
+				.boundingClientRect().exec(res => {
 					let j = 0;
 					for (let i = this.startIndex; i <= this.endIndex; i++) {
 						this.sizeArr[i] = { height: res[0][j].height + this.space }
-						this.sizeArr[i]['top'] = this.sum(this.sizeArr.slice(0, i).map(el => el.height || 0))
+						this.sizeArr[i]['top'] = this.sumSize(0, i)
 						j++
 					}
 
-					const sumHeight = this.sum(this.sizeArr.map(el => el.height || 0))
-					if (this.estimateHeight >= sumHeight) return
+					const sumHeight = this.sumSize(0, this.sizeArr.length)
+					if (this.estimateHeight >= sumHeight) return //预估高度大于等于当前缓存元素高度，不更新
 					this.listHeight = sumHeight
 				})
 		},
@@ -110,14 +109,14 @@
 			if (e.scrollTop < this.scrollTop) this.isTouchUp = true //判断滑动方向
 			else this.isTouchUp = false
 			this.scrollTop = e.scrollTop
-		}, 50),
+		}, 12),
 		methods: {
-			sum(arr) {
-				try {
-					return arr.reduce((prev, curr) => prev + curr)
-				} catch {
-					return 0
+			sumSize(start, end) {
+				let sum = 0
+				for (let i = start; i < end; i++) {
+					sum += (this.sizeArr[i] ? this.sizeArr[i].height : 0)
 				}
+				return sum
 			}
 		}
 	}
