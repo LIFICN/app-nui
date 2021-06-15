@@ -39,7 +39,7 @@
 			},
 			//数据的结束索引
 			endIndex() {
-				return Math.min(this.startIndex + this.visibleCount, this.list.length - 1)
+				return Math.min(this.startIndex + this.visibleCount, this.list.length)
 			},
 			//列表显示数据
 			visibleData() {
