@@ -77,7 +77,6 @@
 				deep: true,
 				immediate: true,
 				handler(newVal, _) {
-					this.isScrollBottom = false
 					this.sizeArr = new Array(newVal.length)
 				}
 			}
