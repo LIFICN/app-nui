@@ -37,12 +37,6 @@
 			"style": {
 				"navigationBarTitleText": "Login"
 			}
-		},
-		{
-			"path": "pages/virtual-list/index",
-			"style": {
-				"navigationBarTitleText": "长列表虚拟滚动"
-			}
 		}
 	],
 	"globalStyle": {
@@ -63,10 +57,10 @@
 		"fontSize": "14px",
 		"list": [{
 			"pagePath": "pages/index/index",
-			"text": "组件"
+			"text": "首页"
 		}, {
-			"pagePath": "pages/virtual-list/index",
-			"text": "虚拟列表"
+			"pagePath": "pages/login/index",
+			"text": "登录页"
 		}]
 	},
 	"easycom": {

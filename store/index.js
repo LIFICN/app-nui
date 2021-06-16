@@ -1,14 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
 		count: 1
-	},
-	getters: {
-		count: state => state.count
 	},
 	mutations: {
 		add(state) {

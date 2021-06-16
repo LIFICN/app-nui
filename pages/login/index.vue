@@ -1,6 +1,5 @@
 <template>
 	<view class="flex-column login-wrapper">
-
 		<view class="flex-column head">
 			<image class="head-img" src="@/static/logo.png">
 		</view>
@@ -17,11 +16,9 @@
 		</view>
 
 		<view class="flex-row list-item">
-			<input class="flex-1 list-input" :value="code" @input="input($event,'code')" placeholder="请输入短信验证码" />
-			<uni-icons v-show="code" @tap="clearInput('code')" type="closeempty" size="16" style="margin-right: 3px;">
-			</uni-icons>
+			<input class="flex-1 list-input" :value="code" @input="input($event,'code')" placeholder="请输入验证码" />
 			<text class="flex-row code" @tap="sendCode" :style="{color: [sendCodeInterval>0?'gray':'#007aff']}">
-				{{sendCodeInterval>0 ?`${sendCodeInterval}s`:'获取验证码'}}
+				{{sendCodeInterval > 0 ? `${sendCodeInterval}s` : '获取验证码'}}
 			</text>
 		</view>
 
@@ -44,7 +41,6 @@
 			clearInput(type) {
 				if (type === 'phone') this.phone = ''
 				else if (type === 'pwd') this.pwd = ''
-				else if (type == 'code') this.code = ''
 			},
 			input(e, type) {
 				const { value } = e.target
@@ -72,10 +68,6 @@
 		border: none;
 	}
 
-	.btn-hover {
-		background-color: #0062cc !important;
-	}
-
 	.login-wrapper {
 		align-items: center;
 		overflow: hidden;
@@ -86,11 +78,11 @@
 			margin-top: 30rpx;
 			width: 161rpx;
 			height: 161rpx;
-		}
 
-		.head-img {
-			width: 100%;
-			height: 100%;
+			.head-img {
+				width: 100%;
+				height: 100%;
+			}
 		}
 
 		.list-item {
@@ -113,6 +105,10 @@
 			background-color: #007aff;
 			color: white;
 			margin: 20rpx;
+		}
+
+		.btn-hover {
+			background-color: #0062cc !important;
 		}
 
 		.code {

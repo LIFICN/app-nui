@@ -7,7 +7,6 @@
 			<swiper-item v-for="(item,index) in tabList" :key="index" class="flex-column swiper-item">
 				<view class="btn-c" v-if="index==0">
 					<button @click="goToPage('../search/index')">搜索页</button>
-					<button @click="goToPage('../login/index')">登录demo页</button>
 					<!-- #ifdef MP-WEIXIN -->
 					<button open-type="getUserInfo" @getuserinfo="getuserinfo">获取微信小程序用户信息</button>
 					<!-- #endif -->
@@ -24,7 +23,7 @@
 	export default {
 		computed: {
 			count() {
-				return this.$store.getters.count
+				return this.$store.state.count
 			}
 		},
 		data() {
