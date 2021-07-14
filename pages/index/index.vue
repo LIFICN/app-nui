@@ -5,7 +5,7 @@
 		<swiper class="flex-1 swiper" :current="current" :circular="false" @change="change('swiper',$event)"
 			:duration="300">
 			<swiper-item v-for="(item,index) in tabList" :key="index" class="flex-column swiper-item">
-				<view class="btn-c" v-if="index==0">
+				<view class="btn-c" v-if="index == 0">
 					<button @click="goToPage('../search/index')">搜索页</button>
 					<!-- #ifdef MP-WEIXIN -->
 					<button open-type="getUserInfo" @getuserinfo="getuserinfo">获取微信小程序用户信息</button>
@@ -20,11 +20,11 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex'
+
 	export default {
 		computed: {
-			count() {
-				return this.$store.state.count
-			}
+			...mapGetters(['count'])
 		},
 		data() {
 			return {

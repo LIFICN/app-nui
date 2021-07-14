@@ -21,9 +21,7 @@
 			}
 		},
 		onNavigationBarButtonTap(e) {
-			if (e.text === '取消') {
-				uni.navigateBack()
-			}
+			if (e.text === '取消') uni.navigateBack()
 		},
 		onNavigationBarSearchInputChanged(e) {
 			this.content = e.text
@@ -34,8 +32,7 @@
 		},
 		onNavigationBarSearchInputConfirmed() {
 			console.log('search input confired')
-		},
-		methods: {}
+		}
 	}
 </script>
 

@@ -75,7 +75,7 @@
 		.head {
 			justify-content: center;
 			align-items: center;
-			margin-top: 30rpx;
+			margin-top: 40rpx;
 			width: 161rpx;
 			height: 161rpx;
 
@@ -87,24 +87,27 @@
 
 		.list-item {
 			border: 1px solid #F1F1F1;
-			border-radius: 50rpx;
+			border-radius: 60rpx;
 			padding: 20rpx;
-			width: 80%;
-			margin: 20rpx;
+			margin: 40rpx 60rpx 0rpx 60rpx;
 			align-items: center;
+			width: calc(100% - 120rpx);
+			box-sizing: border-box;
 		}
 
 		.list-input {
 			padding-right: 10rpx;
+			color: #333333;
+			font-size: 32rpx;
 		}
 
 		.btn {
-			font-size: 35rpx;
-			width: 85%;
-			border-radius: 50rpx;
+			font-size: 32rpx;
+			border-radius: 60rpx;
 			background-color: #007aff;
-			color: white;
-			margin: 20rpx;
+			color: #FFFFFF;
+			margin: 40rpx;
+			width: calc(100% - 120rpx);
 		}
 
 		.btn-hover {
